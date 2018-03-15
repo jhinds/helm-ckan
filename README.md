@@ -9,17 +9,18 @@ This repo serves to help deploy CKAN onto Kubernetes via Helm.
 
 ### Build Dockerfile
 From the base repo directory where:
-- `REGISTRY=<registry>` is your docker registry or username
+- `REGISTRY=<registry>` is your docker registry or username.
+- `TAG=<tag>` is the tag of the image.
 - `IMAGE=<image>` is the name of the image in the [docker](docker) directory. Options are `ckan`, and `ckan-postgres`, `ckan-solr`.
 
 ```
 $ export REGISTRY=<registry> && \
-     export TAG=2.7.2 && \
-     export IMAGE=<image> && \
-     docker build -t $REGISTRY/$IMAGE:$TAG docker/$IMAGE && \
+     export TAG=<tag> && \
+     export IMAGE=<image>
+
+$ docker build -t $REGISTRY/$IMAGE:$TAG docker/$IMAGE && \
      docker push $REGISTRY/$IMAGE:$TAG
 ```
-
 
 ### Create Config Maps
 Make sure you are pointed at the right Kubernetes cluster.  Verify by running:
@@ -28,11 +29,11 @@ Make sure you are pointed at the right Kubernetes cluster.  Verify by running:
 Now create the config maps for CKAN. This is not bundled in the docker image so the configuration is decoupled from the image.
 
 ```
-$ kubectl apply -f configs/
+$ kubectl apply -f configs/ -n ckan
 ```
 
 ### Create Helm Release
 From the base repo directory
 ```
-$ helm install helm/ckan
+$ helm install helm/ckan -n ckan
 ```

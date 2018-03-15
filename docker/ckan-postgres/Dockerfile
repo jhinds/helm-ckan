@@ -15,5 +15,5 @@ ENV POSTGIS_DIR=/usr/share/postgresql/9.6/contrib/postgis-2.4
 # order hence the numbers in front
 RUN cp $POSTGIS_DIR/postgis.sql /docker-entrypoint-initdb.d/0_postgis.sql
 RUN cp $POSTGIS_DIR/spatial_ref_sys.sql /docker-entrypoint-initdb.d/1_spatial_ref_sys.sql
-COPY resources/core/docker/ckan-postgres/run_python_script.sh /docker-entrypoint-initdb.d/3_run_python_script.sh
-COPY bin/ckan_db_setup.py /opt/ckan_db_setup.py
+COPY run_python_script.sh /docker-entrypoint-initdb.d/3_run_python_script.sh
+COPY setup_db.py /opt/setup_db.py

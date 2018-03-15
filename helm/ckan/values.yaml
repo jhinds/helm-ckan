@@ -28,13 +28,9 @@ image:
     pullPolicy: Always
     port: 5432
     local: false
-  nginx:
-    repository: nginx
-    tag: 1.13.8-alpine
-    pullPolicy: Always
   rqWorker:
     command: ["/opt/bin/rq-worker-entrypoint.sh"]
-    replicaCount: 2
+    replicaCount: 1
 environment:
   ckan:
     CKAN_SOLR_URL: http://localhost
