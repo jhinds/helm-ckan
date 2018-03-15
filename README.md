@@ -1,6 +1,6 @@
 # Helm CKAN
 
-This repo serves to help deploy CKAN onto kubernetes via Helm.
+This repo serves to help deploy CKAN onto Kubernetes via Helm.
 
 ### Prerequisites
 - [docker](https://docs.docker.com/install/) if you want to build your own CKAN image
@@ -8,10 +8,26 @@ This repo serves to help deploy CKAN onto kubernetes via Helm.
 - a running kubernetes cluster, you can install [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/) to test locally.
 
 ### Build Dockerfile
-From the parent directory
+From the base repo directory
 ```
 $ export REPO=<your repo> && \
      export TAG=2.7.2 && \
      docker build -t $REPO/ckan:$TAG docker/ && \
      docker push $REPO/ckan:$TAG
+```
+
+### Create Config Maps
+Make sure you are pointed at the right Kubernetes cluster.  Verify by running:
+`$ kubectl config current-context`
+
+Now create the config maps for CKAN. This is not bundled in the docker image so the configuration is decoupled from the image.
+
+```
+$ kubectl apply -f configs/
+```
+
+### Create Helm Release
+From the base repo directory
+```
+$ helm install helm/ckan
 ```
