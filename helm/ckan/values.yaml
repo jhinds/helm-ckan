@@ -1,30 +1,83 @@
 # Default values for ckan.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
 replicaCount: 1
-
+namespace: ckan
+customer: ''
 image:
-  repository: nginx
-  tag: stable
-  pullPolicy: IfNotPresent
-
+  ckan:
+    repository: jhinds/ckan
+    tag: 2.7.2
+    pullPolicy: Always
+    port: 5000
+    command: ["/opt/bin/ckan-entrypoint.sh"]
+  solr:
+    repository: jhinds/ckan-solr
+    tag: 6.6.2
+    pullPolicy: Always
+    port: 8983
+    ckanUrlPath: solr/ckan
+  redis:
+    repository: redis
+    tag: 3.2.11
+    pullPolicy: Always
+    port: 6379
+  postgres:
+    repository: jhinds/ckan-postgres
+    tag: 9.3.20
+    pullPolicy: Always
+    port: 5432
+    local: false
+  nginx:
+    repository: nginx
+    tag: 1.13.8-alpine
+    pullPolicy: Always
+  rqWorker:
+    command: ["/opt/bin/rq-worker-entrypoint.sh"]
+    replicaCount: 2
+environment:
+  ckan:
+    CKAN_SOLR_URL: http://localhost
+    CKAN_REDIS_URL: redis://localhost
+    CKAN_SITE_URL: http://ckan.myminikube.me
+    CUSTOMER_CONFIG: dev.ini
+  postgres:
+    POSTGRES_DB: ckan
+    POSTGRES_USER: ckan
+    POSTGRES_PASSWORD: ckan
 service:
+  name: nginx
   type: ClusterIP
-  port: 80
+  externalPort: 80
+  internalPort: 80
+volumes:
+  ckanConfigMap: ckan-config
+  customerConfig:
+  mountPath: /etc/ckan/
 
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: true
+  # Used to create an Ingress record.
+  ckan:
+    host: ckan.minikube.me
+  annotations:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
-  hosts:
-    - chart-example.local
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+persistentVolume:
+  nfs:
+    server:
+    path:
+    enabled: false
+    capacity:
+      storage: 10Gi
+persistentVolumeClaim:
+  storageRequestSize: 10Gi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -37,9 +90,3 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
