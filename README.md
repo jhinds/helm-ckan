@@ -8,13 +8,18 @@ This repo serves to help deploy CKAN onto Kubernetes via Helm.
 - a running kubernetes cluster, you can install [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/) to test locally.
 
 ### Build Dockerfile
-From the base repo directory
+From the base repo directory where:
+- `REGISTRY=<registry>` is your docker registry or username
+- `IMAGE=<image>` is the name of the image in the [docker](docker) directory. Options are `ckan`, and `ckan-postgres`, `ckan-solr`.
+
 ```
-$ export REPO=<your repo> && \
+$ export REGISTRY=<registry> && \
      export TAG=2.7.2 && \
-     docker build -t $REPO/ckan:$TAG docker/ && \
-     docker push $REPO/ckan:$TAG
+     export IMAGE=<image> && \
+     docker build -t $REGISTRY/$IMAGE:$TAG docker/$IMAGE && \
+     docker push $REGISTRY/$IMAGE:$TAG
 ```
+
 
 ### Create Config Maps
 Make sure you are pointed at the right Kubernetes cluster.  Verify by running:
