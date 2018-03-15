@@ -2,18 +2,31 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "ckan.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     app: {{ template "ckan.name" . }}
-    chart: {{ template "ckan.chart" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - name: ckan
       protocol: TCP
-      name: http
+      port: {{ .Values.image.ckan.port }}
+      targetPort: {{ .Values.image.ckan.port }}
+    - name: postgres
+      protocol: TCP
+      port: {{ .Values.image.postgres.port }}
+      targetPort: {{ .Values.image.postgres.port }}
+    - name: redis
+      protocol: TCP
+      port: {{ .Values.image.redis.port }}
+      targetPort: {{ .Values.image.redis.port }}
+    - name: solr
+      protocol: TCP
+      port: {{ .Values.image.solr.port }}
+      targetPort: {{ .Values.image.solr.port }}
   selector:
     app: {{ template "ckan.name" . }}
     release: {{ .Release.Name }}
