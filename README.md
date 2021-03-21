@@ -22,16 +22,6 @@ $ docker build -t $REGISTRY/$IMAGE:$TAG docker/$IMAGE && \
      docker push $REGISTRY/$IMAGE:$TAG
 ```
 
-### Create Config Maps
-Make sure you are pointed at the right Kubernetes cluster.  Verify by running:
-`$ kubectl config current-context`
-
-Now create the config maps for CKAN. This is not bundled in the docker image so the configuration is decoupled from the image.
-
-```bash
-$ kubectl apply -f configs/ -n ckan
-```
-
 ### Create Helm Release
 From the base repo directory
 ```bash

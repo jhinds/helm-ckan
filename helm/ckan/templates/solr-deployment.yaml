@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ckan.fullname" . }}-solor
+  name: {{ template "ckan.fullname" . }}-solr
   labels:
     app: solr
     chart: {{ template "ckan.chart" . }}

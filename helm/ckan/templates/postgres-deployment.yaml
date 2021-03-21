@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ckan.fullname" . }}-solor
+  name: {{ template "ckan.fullname" . }}-postgres
   labels:
     app: postgres
     chart: {{ template "ckan.chart" . }}
@@ -34,13 +34,18 @@ spec:
               containerPort: {{ .Values.image.postgres.port }}
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+                port: {{ .Values.image.postgres.port }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+                port: {{ .Values.image.postgres.port }}
+          env:
+          - name: POSTGRES_DB
+            value: {{ .Values.environment.postgres.POSTGRES_DB }}
+          - name: POSTGRES_USER
+            value: {{ .Values.environment.postgres.POSTGRES_USER }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.environment.postgres.POSTGRES_PASSWORD }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

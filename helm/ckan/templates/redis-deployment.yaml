@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ckan.fullname" . }}-solor
+  name: {{ template "ckan.fullname" . }}-redis
   labels:
     app: redis
     chart: {{ template "ckan.chart" . }}
@@ -34,13 +34,11 @@ spec:
               containerPort: {{ .Values.image.redis.port }}
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+                port: {{ .Values.image.redis.port }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+                port: {{ .Values.image.redis.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
