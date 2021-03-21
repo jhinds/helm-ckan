@@ -1,3 +1,4 @@
+{{- define "ckan.ini" -}}
 #
 # CKAN - Pylons configuration
 #
@@ -236,3 +237,5 @@ formatter = generic
 
 [formatter_generic]
 format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
+
+{{- end -}}

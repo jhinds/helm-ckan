@@ -13,7 +13,7 @@ From the base repo directory where:
 - `TAG=<tag>` is the tag of the image.
 - `IMAGE=<image>` is the name of the image in the [docker](docker) directory. Options are `ckan`, and `ckan-postgres`, `ckan-solr`.
 
-```
+```bash
 $ export REGISTRY=<registry> && \
      export TAG=<tag> && \
      export IMAGE=<image>
@@ -28,12 +28,17 @@ Make sure you are pointed at the right Kubernetes cluster.  Verify by running:
 
 Now create the config maps for CKAN. This is not bundled in the docker image so the configuration is decoupled from the image.
 
-```
+```bash
 $ kubectl apply -f configs/ -n ckan
 ```
 
 ### Create Helm Release
 From the base repo directory
+```bash
+$ helm install ckan helm/ckan --namespace ckan --create-namespace
 ```
-$ helm install helm/ckan -n ckan
+
+### Upgrade Helm Release
+```bash
+$ helm upgrade ckan helm/ckan
 ```

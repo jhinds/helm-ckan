@@ -30,3 +30,34 @@ Create chart name and version as used by the chart label.
 {{- define "ckan.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "ckan.labels" -}}
+helm.sh/chart: {{ include "ckan.chart" . }}
+{{ include "ckan.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "ckan.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "ckan.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "ckan.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "ckan.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}

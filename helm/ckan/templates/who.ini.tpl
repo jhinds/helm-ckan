@@ -1,3 +1,4 @@
+{{- define "who.ini" -}}
 [plugin:auth_tkt]
 use = ckan.lib.auth_tkt:make_plugin
 # If no secret key is defined here, beaker.session.secret will be used
@@ -35,3 +36,5 @@ plugins =
 plugins =
     friendlyform;browser
 #   basicauth
+
+{{- end -}}

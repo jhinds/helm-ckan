@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "ckan.fullname" . }}
@@ -46,54 +46,22 @@ spec:
           volumeMounts:
           - name: ckan-config
             mountPath: {{ .Values.volumes.mountPath }}
-          - name: ckan-apache-config
-            mountPath: /etc/apache2/sites-available
+          # - name: ckan-apache-config
+          #   mountPath: /etc/apache2/sites-available
 {{ if .Values.persistentVolume.nfs.enabled }}
           - name: ckan-data
             mountPath: /data/ckan
 {{ end }}
-
-        - name: solr
-          image: "{{ .Values.image.solr.repository }}:{{ .Values.image.solr.tag }}"
-          imagePullPolicy: {{ .Values.image.solr.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.image.solr.port }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-
-{{ if .Values.image.postgres.local }}
-        - name: postgres
-          image: "{{ .Values.image.postgres.repository }}:{{ .Values.image.postgres.tag }}"
-          imagePullPolicy: {{ .Values.image.postgres.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.image.postgres.port }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-          env:
-          - name: POSTGRES_DB
-            value: {{ .Values.environment.postgres.POSTGRES_DB }}
-          - name: POSTGRES_USER
-            value: {{ .Values.environment.postgres.POSTGRES_USER }}
-          - name: POSTGRES_PASSWORD
-            value: {{ .Values.environment.postgres.POSTGRES_PASSWORD }}
-{{ end }}
-
-        - name: redis
-          image: "{{ .Values.image.redis.repository }}:{{ .Values.image.redis.tag }}"
-          imagePullPolicy: {{ .Values.image.redis.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.image.redis.port }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-{{ toYaml . | indent 8 }}
-    {{- end }}
       volumes:
         - name: ckan-config
           configMap:
-            name: {{ .Values.volumes.ckanConfigMap }}
+            name: {{ template "ckan.fullname" . }}-config-map
+            items:
+            - key: ckan.ini
+              path: ckan.ini
         - name: who-ini-config
           configMap:
-            name: {{ .Values.volumes.ckanConfigMap }}
+            name: {{ template "ckan.fullname" . }}-config-map
             items:
             - key: who.ini
               path: who.ini

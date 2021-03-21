@@ -294,7 +294,7 @@
 		<processor class="solr.UUIDUpdateProcessorFactory" />
 		<processor class="solr.LogUpdateProcessorFactory" />
 		<processor class="solr.DistributedUpdateProcessorFactory" />
-		<processor class="solr.RemoveBlankFieldUpdateProcessorFactory" />
+		<processor class="solr.RemoveckanFieldUpdateProcessorFactory" />
 		<processor class="solr.FieldNameMutatingUpdateProcessorFactory">
 			<str name="pattern">[^\w-\.]</str>
 			<str name="replacement">_</str>

@@ -27,7 +27,7 @@ image:
     tag: 9.3.20
     pullPolicy: Always
     port: 5432
-    local: false
+    local: true
   rqWorker:
     command: ["/opt/bin/rq-worker-entrypoint.sh"]
     replicaCount: 1
@@ -52,7 +52,7 @@ volumes:
   mountPath: /etc/ckan/
 
 ingress:
-  enabled: true
+  enabled: false
   # Used to create an Ingress record.
   ckan:
     host: ckan.minikube.me

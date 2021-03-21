@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ckan.fullname" . }}-config-map
+data:
+  ckan.ini: |-
+{{ include "ckan.ini" . | indent 4 }}
+  who.ini: |-
+{{ include "who.ini" . | indent 4 }}
