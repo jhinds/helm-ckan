@@ -76,13 +76,13 @@ ckan.auth.roles_that_cascade_to_sub_groups = admin
 ## Search Settings
 
 ckan.site_id = default
-solr_url = http://ckan-solr.ckan:8983/solr/ckan
+solr_url = http://{{ template "ckan.fullname" . }}-solr.{{ .Release.Namespace }}:{{ .Values.image.solr.port }}/solr/ckan
 
 
 ## Redis Settings
 
 # URL to your Redis instance, including the database to be used.
-ckan.redis.url = redis://ckan-redis.ckan:6379/0
+ckan.redis.url = redis://{{ template "ckan.fullname" . }}-redis.{{ .Release.Namespace }}:{{ .Values.image.redis.port }}/0
 
 
 ## CORS Settings
