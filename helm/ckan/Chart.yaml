@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "2.7.2"
+appVersion: "2.9.2"
 description: A Helm chart for Kubernetes
 name: ckan
 version: 1.0

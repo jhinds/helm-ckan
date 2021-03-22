@@ -15,6 +15,7 @@ RUN apt-get -q -y update \
         apache2 \
         build-essential \
         curl \
+        dnsutils \
         fish \
         git-core \
         python3-dev \

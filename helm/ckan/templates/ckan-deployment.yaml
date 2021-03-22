@@ -23,7 +23,16 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       initContainers:
-        - name: ckan-init
+        - name: init-postgres
+          image: busybox:1.32.1
+          command: ['sh', '-c', "until nslookup ckan-postgres.ckan.svc.cluster.local; do echo waiting for postgres; sleep 5; done"]
+        - name: init-solr
+          image: busybox:1.32.1
+          command: ['sh', '-c', "until nslookup ckan-solr.ckan.svc.cluster.local; do echo waiting for solr; sleep 5; done"]
+        - name: init-redis
+          image: busybox:1.32.1
+          command: ['sh', '-c', "until nslookup ckan-redis.ckan.svc.cluster.local; do echo waiting for redis; sleep 5; done"]
+        - name: init-ckan
           image: "{{ .Values.image.ckan.repository }}:{{ .Values.image.ckan.tag }}"
           imagePullPolicy: {{ .Values.image.ckan.pullPolicy }}
           command: {{ .Values.image.ckan.initCommand | toJson }}
