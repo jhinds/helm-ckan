@@ -40,7 +40,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: ckan-config
-            mountPath: {{ .Values.volumes.mountPath }}
+            mountPath: /etc/ckan/ckan.ini
       volumes:
         - name: ckan-config
           configMap:

@@ -22,4 +22,4 @@ if [ -z "$CKAN_REDIS_URL" ]; then
 fi
 
 echo "Starting RQ Worker"
-paster --plugin=ckan jobs -c $CONFIG worker
+ckan -c $CONFIG jobs  worker

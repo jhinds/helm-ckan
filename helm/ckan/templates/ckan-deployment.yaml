@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ckan.fullname" . }}
+  name: {{ template "ckan.fullname" . }}-ckan
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "ckan.name" . }}
@@ -12,12 +12,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "ckan.name" . }}
+      app: {{ template "ckan.name" . }}-ckan
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "ckan.name" . }}
+        app: {{ template "ckan.name" . }}-ckan
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -43,10 +43,8 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: ckan-config
-            mountPath: {{ .Values.volumes.mountPath }}/ckan.ini
+            mountPath: /etc/ckan/ckan.ini
             subPath: ckan.ini
-          # - name: ckan-apache-config
-          #   mountPath: /etc/apache2/sites-available
 {{ if .Values.persistentVolume.nfs.enabled }}
           - name: ckan-data
             mountPath: /data/ckan

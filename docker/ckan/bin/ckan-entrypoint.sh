@@ -22,17 +22,17 @@ if [ -z "$CKAN_REDIS_URL" ]; then
 fi
 
 echo "Initializng CKAN DB"
-paster --plugin=ckan db init -c $CONFIG
+ckan -c $CONFIG db init
 
 {
   echo "Initializing CKAN Extractor"
-  paster --plugin=ckanext-extractor init -c "$CONFIG"
+  ckan -c $CONFIG --plugin=ckanext-extractor init
 } || {
   echo "CKAN Extractor already initialized"
 }
 
 echo "Setting Up Datastore"
-paster --plugin=ckan datastore set-permissions -c $CONFIG
+ckan -c $CONFIG datastore set-permissions
 
 echo "Starting CKAN"
-paster serve $CONFIG
+ckan -c $CONFIG serve

@@ -12,7 +12,8 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "ckan.selectorLabels" . | nindent 6 }}
+      app: {{ template "ckan.name" . }}-postgres
+      release: {{ .Release.Name }}      
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -20,7 +21,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "ckan.selectorLabels" . | nindent 8 }}
+        app: {{ template "ckan.name" . }}-postgres
+        release: {{ .Release.Name }}        
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
