@@ -22,4 +22,4 @@ echo "Setting Up Datastore"
 ckan -c $CONFIG datastore set-permissions
 
 echo "Starting CKAN"
-uwsgi --ini /etc/ckan/uwsgi.ini 
+uwsgi --ini /etc/ckan/uwsgi.ini

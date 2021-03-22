@@ -56,7 +56,7 @@ ckan.datastore.default_fts_index_method = gist
 
 ## Site Settings
 
-ckan.site_url = http://ckan.myminikube.me
+ckan.site_url = http://localhost:{{ .Values.image.ckan.port }}
 #ckan.use_pylons_response_cleanup_middleware = true
 
 ## Authorization Settings

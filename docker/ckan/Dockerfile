@@ -28,7 +28,6 @@ RUN apt-get -q -y update \
         postgresql-client \
         vim \
         wget \
-        uwsgi \
     && apt-get -q clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -36,6 +35,7 @@ RUN apt-get -q -y update \
 RUN mkdir -p $CKAN_CONFIG $CKAN_STORAGE_PATH $CKAN_HOME
 RUN pip install setuptools==44.1.0
 RUN pip install pastescript==3.2.0
+RUN pip install uwsgi==2.0.19.1
 RUN pip install --upgrade pip
 
 RUN git clone https://github.com/ckan/ckan.git --depth 1 -b ckan-$CKAN_VERSION $CKAN_HOME/src/ckan/
