@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "ckan.fullname" . }}-postgres
+  namespace: {{ .Release.Namespace }}
   labels:
     app: postgres
     chart: {{ template "ckan.chart" . }}

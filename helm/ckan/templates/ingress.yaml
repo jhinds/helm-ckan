@@ -9,7 +9,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "ckan.fullname" . }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "ckan.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}

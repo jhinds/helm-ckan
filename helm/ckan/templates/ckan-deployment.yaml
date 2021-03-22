@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "ckan.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "ckan.name" . }}
     chart: {{ template "ckan.chart" . }}
@@ -38,14 +39,12 @@ spec:
             value: {{ .Values.environment.ckan.CKAN_REDIS_URL }}:{{ .Values.image.redis.port }}
           - name: CKAN_SITE_URL
             value: {{ .Values.environment.ckan.CKAN_SITE_URL }}
-            # this is the config file that ckan will be using
-          - name: CUSTOMER_CONFIG
-            value: {{ .Values.environment.ckan.CUSTOMER_CONFIG }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: ckan-config
-            mountPath: {{ .Values.volumes.mountPath }}
+            mountPath: {{ .Values.volumes.mountPath }}/ckan.ini
+            subPath: ckan.ini
           # - name: ckan-apache-config
           #   mountPath: /etc/apache2/sites-available
 {{ if .Values.persistentVolume.nfs.enabled }}

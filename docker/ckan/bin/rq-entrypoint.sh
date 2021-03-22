@@ -6,7 +6,7 @@ set -e
 # URL for redis (required unless linked to a container called 'redis')
 : ${CKAN_REDIS_URL:=}
 
-CONFIG="${CKAN_CONFIG}/${CUSTOMER_CONFIG}"
+CONFIG="${CKAN_CONFIG}/ckan.ini"
 
 abort () {
   echo "$@" >&2

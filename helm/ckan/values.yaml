@@ -2,12 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
-namespace: ckan
-customer: ''
 image:
   ckan:
     repository: jhinds/ckan
-    tag: 2.7.2
+    tag: 2.9.2
     pullPolicy: Always
     port: 5000
     command: ["/opt/bin/ckan-entrypoint.sh"]
@@ -29,14 +27,13 @@ image:
     port: 5432
     local: true
   rqWorker:
-    command: ["/opt/bin/rq-worker-entrypoint.sh"]
+    command: ["/opt/bin/rq-entrypoint.sh"]
     replicaCount: 1
 environment:
   ckan:
     CKAN_SOLR_URL: http://localhost
     CKAN_REDIS_URL: redis://localhost
     CKAN_SITE_URL: http://ckan.myminikube.me
-    CUSTOMER_CONFIG: dev.ini
   postgres:
     POSTGRES_DB: ckan
     POSTGRES_USER: ckan
@@ -47,8 +44,6 @@ service:
   externalPort: 80
   internalPort: 80
 volumes:
-  ckanConfigMap: ckan-config
-  customerConfig:
   mountPath: /etc/ckan/
 
 ingress:

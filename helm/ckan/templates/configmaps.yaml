@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "ckan.fullname" . }}-config-map
+  namespace: {{ .Release.Namespace }}
 data:
   ckan.ini: |-
 {{ include "ckan.ini" . | indent 4 }}
