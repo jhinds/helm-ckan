@@ -33,6 +33,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.solr.repository }}:{{ .Values.image.solr.tag }}"
           imagePullPolicy: {{ .Values.image.solr.pullPolicy }}
+          command: {{ .Values.image.solr.command | toJson }}
           ports:
             - name: http
               containerPort: {{ .Values.image.solr.port }}

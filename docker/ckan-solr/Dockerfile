@@ -2,6 +2,7 @@ FROM solr:6.6.2-alpine
 
 # Enviroment
 ENV SOLR_CORE ckan
+ENV SOLR_USER root
 
 # User
 USER root
@@ -22,6 +23,9 @@ https://raw.githubusercontent.com/apache/lucene-solr/releases/lucene-solr/6.0.0/
 # Create Core.properties
 RUN echo name=$SOLR_CORE > /opt/solr/server/solr/$SOLR_CORE/core.properties
 
+# RUN addgroup -g 1000 $SOLR_USER
+# RUN adduser -u 1000 -G $SOLR_USER -h /home/$SOLR_USER -D $SOLR_USER
+
 # Giving ownership to Solr
 RUN chown -R $SOLR_USER:$SOLR_USER /opt/solr/server/solr/$SOLR_CORE
 
@@ -30,7 +34,7 @@ WORKDIR /opt/solr
 USER $SOLR_USER
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["solr-foreground"]
+CMD ["solr-foreground", "--force"]
 
 # Build time metadata for the container
-LABEL og.build.org=opengovorg
+LABEL og.build.org=io.hinds

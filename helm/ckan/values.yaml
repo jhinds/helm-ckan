@@ -15,6 +15,7 @@ image:
     pullPolicy: Always
     port: 8983
     ckanUrlPath: solr/ckan
+    command: ["solr-foreground", "-force"]
   redis:
     repository: redis
     tag: 3.2.11

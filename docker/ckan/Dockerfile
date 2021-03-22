@@ -14,6 +14,7 @@ RUN apt-get -q -y update \
     && apt-get -q -y install \
         apache2 \
         build-essential \
+        curl \
         fish \
         git-core \
         python3-dev \
