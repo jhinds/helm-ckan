@@ -9,3 +9,19 @@ data:
 {{ include "ckan.ini" . | indent 4 }}
   who.ini: |-
 {{ include "who.ini" . | indent 4 }}
+  wsgi.py: |-
+{{ include "wsgi.py" . | indent 4 }}
+  uwsgi.ini: |-
+{{ include "uwsgi.ini" . | indent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ckan.fullname" . }}-solr-config-map
+  namespace: {{ .Release.Namespace }}
+data:
+  schema.xml: |-
+{{ include "schema.xml" . | indent 4 }}
+  solrconfig.xml: |-
+{{ include "solrconfig.xml" . | indent 4 }}

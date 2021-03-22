@@ -19,6 +19,8 @@ spec:
       labels:
         app: {{ template "ckan.name" . }}-ckan
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       containers:
         - name: ckan
@@ -32,19 +34,21 @@ spec:
               port: {{ .Values.image.ckan.port }}
             initialDelaySeconds: 5
             periodSeconds: 10
-          env:
-          - name: CKAN_SOLR_URL
-            value: {{ .Values.environment.ckan.CKAN_SOLR_URL }}:{{ .Values.image.solr.port }}/{{ .Values.image.solr.ckanUrlPath }}
-          - name: CKAN_REDIS_URL
-            value: {{ .Values.environment.ckan.CKAN_REDIS_URL }}:{{ .Values.image.redis.port }}
-          - name: CKAN_SITE_URL
-            value: {{ .Values.environment.ckan.CKAN_SITE_URL }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: ckan-config
             mountPath: /etc/ckan/ckan.ini
             subPath: ckan.ini
+          - name: who-ini-config
+            mountPath: /etc/ckan/who.ini 
+            subPath: who.ini
+          - name: uwsgi-ini-config
+            mountPath: /etc/ckan/uwsgi.ini 
+            subPath: uwsgi.ini
+          - name: wsgi-py-config
+            mountPath: /etc/ckan/wsgi.py 
+            subPath: wsgi.py
 {{ if .Values.persistentVolume.nfs.enabled }}
           - name: ckan-data
             mountPath: /data/ckan
@@ -62,6 +66,19 @@ spec:
             items:
             - key: who.ini
               path: who.ini
+        - name: uwsgi-ini-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-config-map
+            items:
+            - key: uwsgi.ini
+              path: uwsgi.ini
+        - name: wsgi-py-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-config-map
+            items:
+            - key: wsgi.py
+              path: wsgi.py
+
 {{ if .Values.persistentVolume.nfs.enabled }}
         - name: ckan-data
           persistentVolumeClaim:

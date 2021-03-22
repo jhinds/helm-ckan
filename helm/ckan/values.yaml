@@ -30,10 +30,6 @@ image:
     command: ["/opt/bin/rq-entrypoint.sh"]
     replicaCount: 1
 environment:
-  ckan:
-    CKAN_SOLR_URL: http://localhost
-    CKAN_REDIS_URL: redis://localhost
-    CKAN_SITE_URL: http://ckan.myminikube.me
   postgres:
     POSTGRES_DB: ckan
     POSTGRES_USER: ckan

@@ -30,5 +30,5 @@ $ helm install ckan helm/ckan --namespace ckan --create-namespace
 
 ### Upgrade Helm Release
 ```bash
-$ helm upgrade ckan helm/ckan
+$ helm upgrade ckan helm/ckan --namespace ckan
 ```

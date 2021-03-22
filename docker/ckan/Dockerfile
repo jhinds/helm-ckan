@@ -41,6 +41,8 @@ RUN git clone https://github.com/ckan/ckan.git --depth 1 -b ckan-$CKAN_VERSION $
 RUN sed -i 's/markdown==2.6.7/markdown==2.6.11/g' $CKAN_HOME/src/ckan/requirements.txt
 RUN pip install --upgrade -r $CKAN_HOME/src/ckan/requirements.txt
 RUN pip install -e $CKAN_HOME/src/ckan/
+COPY extensions.txt /opt/extensions.txt
+RUN pip install -r /opt/extensions.txt
 
 # Create ckan user & update permissions
 RUN useradd -r -u 900 -m -c "ckan account" -d $CKAN_HOME -s /bin/false ckan

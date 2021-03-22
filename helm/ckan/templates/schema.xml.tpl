@@ -1,3 +1,4 @@
+{{- define "schema.xml" -}}
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -185,3 +186,5 @@ schema. In this case the version should be set to the next CKAN version number.
 <copyField source="author" dest="text"/>
 
 </schema>
+
+{{- end -}}

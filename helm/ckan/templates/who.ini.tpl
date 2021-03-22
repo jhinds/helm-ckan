@@ -1,11 +1,11 @@
 {{- define "who.ini" -}}
 [plugin:auth_tkt]
-use = ckan.lib.auth_tkt:make_plugin
+use = ckan.lib.repoze_plugins.auth_tkt:make_plugin
 # If no secret key is defined here, beaker.session.secret will be used
 #secret = somesecret
 
 [plugin:friendlyform]
-use = repoze.who.plugins.friendlyform:FriendlyFormPlugin
+use = ckan.lib.repoze_plugins.friendly_form:FriendlyFormPlugin
 login_form_url= /user/login
 login_handler_path = /login_generic
 logout_handler_path = /user/logout
@@ -13,10 +13,6 @@ rememberer_name = auth_tkt
 post_login_url = /user/logged_in
 post_logout_url = /user/logged_out
 charset = utf-8
-
-#[plugin:basicauth]
-#use = repoze.who.plugins.basicauth:make_plugin
-#realm = 'CKAN'
 
 [general]
 request_classifier = repoze.who.classifiers:default_request_classifier
@@ -35,6 +31,5 @@ plugins =
 [challengers]
 plugins =
     friendlyform;browser
-#   basicauth
 
 {{- end -}}

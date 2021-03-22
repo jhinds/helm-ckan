@@ -20,6 +20,8 @@ spec:
       labels:
         app: {{ template "ckan.name" . }}-rq-worker
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
       - name: regsecret
@@ -28,19 +30,15 @@ spec:
           image: "{{ .Values.image.ckan.repository }}:{{ .Values.image.ckan.tag }}"
           imagePullPolicy: {{ .Values.image.ckan.pullPolicy }}
           command: {{ .Values.image.rqWorker.command | toJson }}
-          env:
-          - name: CKAN_SOLR_URL
-            value: http://{{ template "ckan.fullname" . }}.{{ .Values.namespace }}:{{ .Values.image.solr.port }}/{{ .Values.image.solr.ckanUrlPath }}
-          - name: CKAN_REDIS_URL
-            value: redis://{{ template "ckan.fullname" . }}.{{ .Values.namespace }}:{{ .Values.image.redis.port }}
-          - name: CKAN_SITE_URL
-            value: {{ .Values.environment.ckan.CKAN_SITE_URL }}
-            # this is the config file that ckan will be using
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: ckan-config
             mountPath: /etc/ckan/ckan.ini
+            subPath: ckan.ini
+          - name: who-ini-config
+            mountPath: /etc/ckan/who.ini
+            subPath: who.ini
       volumes:
         - name: ckan-config
           configMap:
