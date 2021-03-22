@@ -25,6 +25,8 @@ $ docker build -t $REGISTRY/$IMAGE:$TAG docker/$IMAGE && \
 ### Create Helm Release
 From the base repo directory
 ```bash
+$ helm template ckan helm/ckan --namespace ckan --create-namespace
+
 $ helm install ckan helm/ckan --namespace ckan --create-namespace
 ```
 
