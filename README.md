@@ -34,3 +34,6 @@ $ helm install ckan helm/ckan --namespace ckan --create-namespace
 ```bash
 $ helm upgrade ckan helm/ckan --namespace ckan
 ```
+
+## TODOS
+- make init container

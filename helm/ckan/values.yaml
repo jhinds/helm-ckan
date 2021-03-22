@@ -9,6 +9,7 @@ image:
     pullPolicy: Always
     port: 5000
     command: ["/opt/bin/ckan-entrypoint.sh"]
+    initCommand: ["/opt/bin/ckan-init.sh"]
   solr:
     repository: jhinds/ckan-solr
     tag: 6.6.2

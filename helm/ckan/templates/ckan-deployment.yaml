@@ -22,6 +22,53 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
+      initContainers:
+        - name: ckan-init
+          image: "{{ .Values.image.ckan.repository }}:{{ .Values.image.ckan.tag }}"
+          imagePullPolicy: {{ .Values.image.ckan.pullPolicy }}
+          command: {{ .Values.image.ckan.initCommand | toJson }}
+          env:
+          - name: CKAN_INI
+            value: /etc/ckan/ckan.ini
+          volumeMounts:
+          - name: ckan-config
+            mountPath: /etc/ckan/ckan.ini
+            subPath: ckan.ini
+          - name: who-ini-config
+            mountPath: /etc/ckan/who.ini 
+            subPath: who.ini
+          - name: uwsgi-ini-config
+            mountPath: /etc/ckan/uwsgi.ini 
+            subPath: uwsgi.ini
+          - name: wsgi-py-config
+            mountPath: /etc/ckan/wsgi.py 
+            subPath: wsgi.py
+      volumes:
+        - name: ckan-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-config-map
+            items:
+            - key: ckan.ini
+              path: ckan.ini
+        - name: who-ini-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-config-map
+            items:
+            - key: who.ini
+              path: who.ini
+        - name: uwsgi-ini-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-config-map
+            items:
+            - key: uwsgi.ini
+              path: uwsgi.ini
+        - name: wsgi-py-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-config-map
+            items:
+            - key: wsgi.py
+              path: wsgi.py
+
       containers:
         - name: ckan
           image: "{{ .Values.image.ckan.repository }}:{{ .Values.image.ckan.tag }}"
@@ -34,6 +81,9 @@ spec:
               port: {{ .Values.image.ckan.port }}
             initialDelaySeconds: 5
             periodSeconds: 10
+          env:
+          - name: CKAN_INI
+            value: /etc/ckan/ckan.ini
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

@@ -39,6 +39,9 @@ spec:
           - name: who-ini-config
             mountPath: /etc/ckan/who.ini
             subPath: who.ini
+          env:
+          - name: CKAN_INI
+            value: /etc/ckan/ckan.ini
       volumes:
         - name: ckan-config
           configMap:
