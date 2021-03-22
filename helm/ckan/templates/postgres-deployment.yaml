@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ckan.fullname" . }}-postgres
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgres
+    chart: {{ template "ckan.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "ckan.name" . }}-postgres
+      release: {{ .Release.Name }}      
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "ckan.name" . }}-postgres
+        release: {{ .Release.Name }}        
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: postgres
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.postgres.repository }}:{{ .Values.image.postgres.tag }}"
+          imagePullPolicy: {{ .Values.image.postgres.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.image.postgres.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+                port: {{ .Values.image.postgres.port }}
+          readinessProbe:
+            tcpSocket:
+                port: {{ .Values.image.postgres.port }}
+          env:
+          - name: POSTGRES_DB
+            value: {{ .Values.environment.postgres.POSTGRES_DB }}
+          - name: POSTGRES_USER
+            value: {{ .Values.environment.postgres.POSTGRES_USER }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.environment.postgres.POSTGRES_PASSWORD }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

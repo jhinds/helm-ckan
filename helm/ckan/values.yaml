@@ -2,41 +2,36 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
-namespace: ckan
-customer: ''
 image:
   ckan:
     repository: jhinds/ckan
-    tag: 2.7.2
+    tag: 2.9.2
     pullPolicy: Always
     port: 5000
     command: ["/opt/bin/ckan-entrypoint.sh"]
+    initCommand: ["/opt/bin/ckan-init.sh"]
   solr:
     repository: jhinds/ckan-solr
     tag: 6.6.2
     pullPolicy: Always
     port: 8983
     ckanUrlPath: solr/ckan
+    command: ["solr-foreground", "-force"]
   redis:
     repository: redis
-    tag: 3.2.11
+    tag: 6.2.1
     pullPolicy: Always
     port: 6379
   postgres:
     repository: jhinds/ckan-postgres
-    tag: 9.3.20
+    tag: 13.2
     pullPolicy: Always
     port: 5432
-    local: false
+    local: true
   rqWorker:
-    command: ["/opt/bin/rq-worker-entrypoint.sh"]
+    command: ["/opt/bin/rq-entrypoint.sh"]
     replicaCount: 1
 environment:
-  ckan:
-    CKAN_SOLR_URL: http://localhost
-    CKAN_REDIS_URL: redis://localhost
-    CKAN_SITE_URL: http://ckan.myminikube.me
-    CUSTOMER_CONFIG: dev.ini
   postgres:
     POSTGRES_DB: ckan
     POSTGRES_USER: ckan
@@ -47,12 +42,10 @@ service:
   externalPort: 80
   internalPort: 80
 volumes:
-  ckanConfigMap: ckan-config
-  customerConfig:
   mountPath: /etc/ckan/
 
 ingress:
-  enabled: true
+  enabled: false
   # Used to create an Ingress record.
   ckan:
     host: ckan.minikube.me

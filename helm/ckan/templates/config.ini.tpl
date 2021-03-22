@@ -1,3 +1,4 @@
+{{- define "ckan.ini" -}}
 #
 # CKAN - Pylons configuration
 #
@@ -45,10 +46,9 @@ who.log_file = %(cache_dir)s/who_log.ini
 # who.timeout = 86400
 
 ## Database Settings
-sqlalchemy.url = postgresql://ckan_default:pass@localhost/ckan_default
-
-#ckan.datastore.write_url = postgresql://ckan_default:pass@localhost/datastore_default
-#ckan.datastore.read_url = postgresql://datastore_default:pass@localhost/datastore_default
+sqlalchemy.url = postgresql://ckan:ckan@ckan-postgres/ckan
+ckan.datastore.write_url = postgresql://ckan:ckan@ckan-postgres/ckan
+ckan.datastore.read_url = postgresql://ckan:ckan@ckan-postgres/ckan
 
 # PostgreSQL' full-text search parameters
 ckan.datastore.default_fts_lang = english
@@ -56,7 +56,7 @@ ckan.datastore.default_fts_index_method = gist
 
 ## Site Settings
 
-ckan.site_url =
+ckan.site_url = http://localhost:{{ .Values.image.ckan.port }}
 #ckan.use_pylons_response_cleanup_middleware = true
 
 ## Authorization Settings
@@ -76,13 +76,13 @@ ckan.auth.roles_that_cascade_to_sub_groups = admin
 ## Search Settings
 
 ckan.site_id = default
-#solr_url = http://127.0.0.1:8983/solr
+solr_url = http://{{ template "ckan.fullname" . }}-solr.{{ .Release.Namespace }}:{{ .Values.image.solr.port }}/solr/ckan
 
 
 ## Redis Settings
 
 # URL to your Redis instance, including the database to be used.
-#ckan.redis.url = redis://localhost:6379/0
+ckan.redis.url = redis://{{ template "ckan.fullname" . }}-redis.{{ .Release.Namespace }}:{{ .Values.image.redis.port }}/0
 
 
 ## CORS Settings
@@ -105,17 +105,17 @@ ckan.plugins = stats
   image_view
   recline_view
   pdf_view
-  officedocs_view
-  datarequests
-  showcase
-  geo_view
-  geojson_view
-  wmts_view
-  spatial_metadata
-  pages
-  odata
-  contact
-  spatial_query
+  # officedocs_view
+  # datarequests
+  # showcase
+  # geo_view
+  # geojson_view
+  # wmts_view
+  # spatial_metadata
+  # pages
+  # odata
+  # contact
+  # spatial_query
 
 # Define which views should be created by default
 # (plugins must be loaded in ckan.plugins)
@@ -236,3 +236,5 @@ formatter = generic
 
 [formatter_generic]
 format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
+
+{{- end -}}

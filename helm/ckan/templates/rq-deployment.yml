@@ -1,21 +1,27 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "ckan.fullname" . }}-rq-worker
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "ckan.name" . }}-rq-worker
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "ckan.name" . }}-rq-worker
+      release: {{ .Release.Name }}
   replicas: {{ .Values.image.rqWorker.replicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "ckan.name" . }}-rq-worker
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       imagePullSecrets:
       - name: regsecret
@@ -24,42 +30,28 @@ spec:
           image: "{{ .Values.image.ckan.repository }}:{{ .Values.image.ckan.tag }}"
           imagePullPolicy: {{ .Values.image.ckan.pullPolicy }}
           command: {{ .Values.image.rqWorker.command | toJson }}
-          env:
-          - name: CKAN_SOLR_URL
-            value: http://{{ template "ckan.fullname" . }}.{{ .Values.namespace }}:{{ .Values.image.solr.port }}/{{ .Values.image.solr.ckanUrlPath }}
-          - name: CKAN_REDIS_URL
-            value: redis://{{ template "ckan.fullname" . }}.{{ .Values.namespace }}:{{ .Values.image.redis.port }}
-          - name: CKAN_SITE_URL
-            value: {{ .Values.environment.ckan.CKAN_SITE_URL }}
-            # this is the config file that ckan will be using
-          - name: CUSTOMER_CONFIG
-            value: {{ .Values.environment.ckan.CUSTOMER_CONFIG }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: ckan-config
-            mountPath: {{ .Values.volumes.mountPath }}
-          - name: ckan-apache-config
-            mountPath: /etc/apache2/sites-available
+            mountPath: /etc/ckan/ckan.ini
+            subPath: ckan.ini
+          - name: who-ini-config
+            mountPath: /etc/ckan/who.ini
+            subPath: who.ini
+          env:
+          - name: CKAN_INI
+            value: /etc/ckan/ckan.ini
       volumes:
         - name: ckan-config
           configMap:
-            name: {{ .Values.volumes.ckanConfigMap }}
-        - name: ckan-nginx-config
-          configMap:
-            name: {{ .Values.volumes.ckanConfigMap }}
+            name: {{ template "ckan.fullname" . }}-config-map
             items:
-            - key: ckan_default
-              path: ckan_default
-        - name: ckan-apache-config
-          configMap:
-            name: {{ .Values.volumes.ckanConfigMap }}
-            items:
-            - key: ckan_default.conf
-              path: ckan_default.conf
+            - key: ckan.ini
+              path: ckan.ini            
         - name: who-ini-config
           configMap:
-            name: {{ .Values.volumes.ckanConfigMap }}
+            name: {{ template "ckan.fullname" . }}-config-map
             items:
             - key: who.ini
               path: who.ini

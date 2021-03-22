@@ -1,3 +1,4 @@
+{{- define "schema.xml" -}}
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,7 +23,7 @@
 <!-- We update the version when there is a backward-incompatible change to this
 schema. In this case the version should be set to the next CKAN version number.
 (x.y but not x.y.z since it needs to be a float) -->
-<schema name="ckan" version="2.7">
+<schema name="ckan" version="2.9">
 
 <types>
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
@@ -79,6 +80,18 @@ schema. In this case the version should be set to the next CKAN version number.
             <filter class="solr.LowerCaseFilterFactory"/>
         </analyzer>
     </fieldType>
+
+    <fieldType name="text_ngram" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <tokenizer class="solr.NGramTokenizerFactory" minGramSize="2" maxGramSize="10"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
 </types>
 
 
@@ -87,10 +100,12 @@ schema. In this case the version should be set to the next CKAN version number.
     <field name="id" type="string" indexed="true" stored="true" required="true" />
     <field name="site_id" type="string" indexed="true" stored="true" required="true" />
     <field name="title" type="text" indexed="true" stored="true" />
+    <field name="title_ngram" type="text_ngram" indexed="true" stored="true" />
     <field name="entity_type" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="dataset_type" type="string" indexed="true" stored="true" />
     <field name="state" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="name" type="string" indexed="true" stored="true" omitNorms="true" />
+    <field name="name_ngram" type="text_ngram" indexed="true" stored="true" />
     <field name="revision_id" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="version" type="string" indexed="true" stored="true" />
     <field name="url" type="string" indexed="true" stored="true" omitNorms="true" />
@@ -110,7 +125,7 @@ schema. In this case the version should be set to the next CKAN version number.
     <field name="organization" type="string" indexed="true" stored="true" multiValued="false"/>
 
     <field name="capacity" type="string" indexed="true" stored="true" multiValued="false"/>
-    <field name="permission_labels" type="text" indexed="true" stored="false" multiValued="true"/>
+    <field name="permission_labels" type="string" indexed="true" stored="false" multiValued="true"/>
 
     <field name="res_name" type="textgen" indexed="true" stored="true" multiValued="true" />
     <field name="res_description" type="textgen" indexed="true" stored="true" multiValued="true"/>
@@ -150,8 +165,8 @@ schema. In this case the version should be set to the next CKAN version number.
 
     <field name="_version_" type="string" indexed="true" stored="true"/>
 
-    <dynamicField name="ckanext-extractor_*" type="text" indexed="true" stored="false"/>
     <dynamicField name="*_date" type="date" indexed="true" stored="true" multiValued="false"/>
+
     <dynamicField name="extras_*" type="text" indexed="true" stored="true" multiValued="false"/>
     <dynamicField name="res_extras_*" type="text" indexed="true" stored="true" multiValued="true"/>
     <dynamicField name="vocab_*" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -162,8 +177,9 @@ schema. In this case the version should be set to the next CKAN version number.
 <defaultSearchField>text</defaultSearchField>
 <solrQueryParser defaultOperator="AND"/>
 
-<copyField source="ckanext-extractor_*" dest="text"/>
 <copyField source="url" dest="urls"/>
+<copyField source="title" dest="title_ngram"/>
+<copyField source="name" dest="name_ngram"/>
 <copyField source="ckan_url" dest="urls"/>
 <copyField source="download_url" dest="urls"/>
 <copyField source="res_url" dest="urls"/>
@@ -185,3 +201,4 @@ schema. In this case the version should be set to the next CKAN version number.
 <copyField source="author" dest="text"/>
 
 </schema>
+{{- end -}}

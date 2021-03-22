@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ckan.fullname" . }}-solr
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: solr
+    chart: {{ template "ckan.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "ckan.name" . }}-solr
+      release: {{ .Release.Name }}      
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+      {{- end }}
+      labels:
+        app: {{ template "ckan.name" . }}-solr
+        release: {{ .Release.Name }}        
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: solr
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.solr.repository }}:{{ .Values.image.solr.tag }}"
+          imagePullPolicy: {{ .Values.image.solr.pullPolicy }}
+          command: {{ .Values.image.solr.command | toJson }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.image.solr.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: solrconfig-xml-config
+            mountPath: /opt/solr/server/solr/ckan/conf/solrconfig.xml
+            subPath: solrconfig.xml
+          - name: schema-xml-config
+            mountPath: /opt/solr/server/solr/ckan/conf/schema.xml
+            subPath: schema.xml
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: solrconfig-xml-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-solr-config-map
+            items:
+            - key: solrconfig.xml
+              path: solrconfig.xml            
+        - name: schema-xml-config
+          configMap:
+            name: {{ template "ckan.fullname" . }}-solr-config-map
+            items:
+            - key: schema.xml
+              path: schema.xml
