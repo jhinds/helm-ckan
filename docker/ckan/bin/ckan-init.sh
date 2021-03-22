@@ -15,3 +15,6 @@ ckan db init
 } || {
   echo "CKAN Extractor already initialized"
 }
+
+# echo "Setting Up Datastore"
+ckan datastore set-permissions

@@ -1,5 +1,4 @@
-FROM solr:6.6.2-alpine
-
+FROM solr:8.8.1-slim
 # Enviroment
 ENV SOLR_CORE ckan
 ENV SOLR_USER root
@@ -37,4 +36,4 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["solr-foreground", "--force"]
 
 # Build time metadata for the container
-LABEL og.build.org=io.hinds
+LABEL build.org=io.hinds

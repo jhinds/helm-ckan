@@ -19,12 +19,12 @@ image:
     command: ["solr-foreground", "-force"]
   redis:
     repository: redis
-    tag: 3.2.11
+    tag: 6.2.1
     pullPolicy: Always
     port: 6379
   postgres:
     repository: jhinds/ckan-postgres
-    tag: 9.3.20
+    tag: 13.2
     pullPolicy: Always
     port: 5432
     local: true

@@ -58,8 +58,10 @@ ARG BUILD_URL=http://localhost
 ARG BRANCH=master
 ARG REPO_URL=git://github.com/jhinds/helm-ckan
 
-LABEL maintainer.name="Jonathan Hinds" \
-      maintainer.email="jonathan@hinds.io" \
+LABEL io.hinds.name="CKAN" \
+      io.hinds.description="For CKAN Deployments" \
+      io.hinds.maintainer.name="Jonathan Hinds" \
+      io.hinds.maintainer.email="jonathan@hinds.io" \
       io.hinds.build.branch=${BRANCH} \
       io.hinds.build.build-url=${BUILD_URL} \
-      ckan.version=${CKAN_VERSION}
+      io.hinds.ckan.version=${CKAN_VERSION}
